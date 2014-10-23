@@ -1,0 +1,209 @@
+CS 1124 — Spring 2010
+
+Recitation 8
+
+ Topics
+
+Classes
+Separate Compilation
+Namespaces
+Recitation Project
+
+Implement a transaction processing program for the Registrar.
+It will have to be able to add/drop courses and students.
+It should also allow for some student information to change over time.
+
+Details
+
+Your program should allow someone using your classes to do these activities:
+
+add a course to the set of offered courses
+add a student to the student body
+enroll a student in a course
+cancel a course
+[DELETED] change a student's name
+[DELETED] drop a student from course
+[DELETED] remove a student from the student body
+print a university report listing all students in each course
+[IF TIME] start a new semester by purging all students and courses
+Some of these activities imply that other activites must be or have been done.
+We are assuming that names are unique (if they weren't we would have to turn everyone into a number).
+Also, we are assuming that, miraculously, students' names are all single tokens (if they weren't things would be harder and when we got to the second part of this problem, we would have to modify the grammar for the transaction commands to handle more complicated names and you won't even know what that means until you get to part two).
+
+First Pass
+
+The registrar maintains all the data for the University.
+[You won't write a University class - just the tester code]
+First we need to make sure that we have implemented the functionality of the Registrar for keeping track of students and courses.
+by writing a method in the Registrar class to do the above activities and, of course, wi rte the other classes needed by the Registrar class to do it's jobs.
+Your first task is to get the following code working.
+
+You should write one method at a time and test it..
+
+#include "Registrar.h"
+using namespace BrooklynPoly;
+
+int main() {
+
+   Registrar r;
+
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+     
+   // AddCourse CS101.001
+   r.addCourse("CS101.001");
+
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+   // AddStudent FritzTheCat
+   r.addStudent("FritzTheCat");
+
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+   // AddCourse CS102.001
+   r.addCourse("CS102.001");
+
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+   // EnrollStudentInCourse FritzTheCat CS102.001
+   r.enrollStudentInCourse("FritzTheCat", "CS102.001");
+
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+   // EnrollStudentInCourse Bullwinkle CS101.001
+   r.enrollStudentInCourse("Bullwinkle", "CS101.001");
+
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+   // CancelCourse CS102.001
+   r.cancelCourse("CS102.001");
+
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+   
+[DELETED]
+	// ChangeStudentName FritzTheCat MightyMouse
+   r.changeStudentName("FritzTheCat", "MightyMouse");
+
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+[DELETED]
+  
+[DELETED]
+	// DropStudentFromCourse MightyMouse CS101.001
+   r.dropStudentFromCourse("MightyMouse", "CS101.001");
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+[DELETED]
+
+
+
+
+
+
+[DELETED]
+	// RemoveStudent FritzTheCat
+   r.removeStudent("FritzTheCat");
+   // PrintReport
+   r.printReport(); // or cout << r << endl;
+[DELETED]
+	
+[IF TIME ]
+   // Purge for start of next semester
+   r.purge();
+   // PrintReport
+   r.printReport();
+[IF TIME ]
+
+
+
+}
+Technical Requirements
+
+Separate compilation. Class definitions should (ok, must) each go in its own header file and all method definitions will go in the associated implementation file.
+Namespace. Place all of your classes in the BrooklynPoly namespace.
+Student will have a vector of pointers to Course objects.
+Course will have a vector of pointers to Student objects.
+Registrar will have two vectors, one for courses and one for students.
+Development
+
+Incremental development is a great help. Write a little bit, then test. Try to test after you write each method. Here's how I would start.
+
+As you go through these steps, each time you introduce a new class, you must put all it's code in a separate file and make sure the namespace issue is correctly handled.
+
+Write just the Registrar constructor and test it. Of course there's not much to test and not much to see yet. [In fact, what does the constructor have to do?]
+Write then add the printReport method for Registrar. How much more will you have to do for the printReport method? Certainly the basic class definitions for the Course and Student classes - probably constructors for them and their own print/display methods that the Registrar's class would call to accomplish it's own printReport.
+Write the Registrar's addCourse. And test with printReport. 
+How do you know that the course isn't already there? 
+Probably writing the code that looks for the course would make a useful method. 
+What should it return?
+Write the Registrar's addStudent. And test with printReport.
+Yeah, the same comments about having a find method for "is this student in the U" probably hold here.
+Write the Registrar's EnrollStudentInCourse. Yes, and you know what comes next.
+Keep going. Bit by bit (well, method my method - methodically?) and test each bit ( method) before doing the next part in the code above.
+Well, actually there's only cancelCourse left to do (and purge if there is enough time).
+Does every method in a class need to be public? What about methods like the ones suggested to find a student or course in the registrar by it's name.
+
+Notes on removing an item from a vector
+
+You don't know the "official STL vector" way of removing an item from a vector but you know the .pop_back() method.
+Can you now figure out how the get that pointer value (after releasing the HEAP memory of course) stored in a vector?
+[yes you can]
+You could also just set the pointer value in the vector to NULL but then you must rewrite the display method(s).
+
+ 
+
+[If you have time do to the purge, do so. If you have even more time, you might want to think about the DELETED items but they are fairly redundant so just skip them. Going to the file processing if funner.]
+
+ 
+
+Second Pass
+
+Only after you have made sure that all of the Registrar's functions work, then you can write the function to read and process the transaction file.
+Ok, realistically, not many people will have time to do this. But if you do have time, then go for it!
+
+The file of transactions
+
+Your program will read a file that contains "transactions". Each line will tell the Registrar to do something. A file might look like:
+
+AddCourse CS101.001
+AddStudent FritzTheCat
+AddCourse CS102.001
+EnrollStudentInCourse FritzTheCat CS102.001
+EnrollStudentInCourse Bullwinkle CS101.001
+CancelCourse CS102.001
+EnrollStudentInCourse FritzTheCat
+[DELETED] ChangeStudentName FritzTheCat MightyMouse
+[DELETED] DropStudentFromCourse MightyMouse CS101.001
+[DELETED] RemoveStudent FritzTheCat
+PrintReport
+[ IF TIME ] Purge
+
+The above file shows all the possible transactions/commands that the file might contain.
+Each transaction occurs on a separate line.
+Some transactions have "parameters" like MighyMouse (a student's name) and CS101.001 (a course) in the "transaction":
+           DropStudentFromCourse MightyMouse CS101.001
+
+Code for this part of the problem will read a line from the transaction file and call the appropriate methods in the appropriate objects to get this transaction done.
+
+Error Checking in the Transaction File
+
+Transactions may have errors. For example, a transaction may attempt to enroll a student in a course, who is not in the school. In the file above, the line:
+
+EnrollStudentInCourse Bullwinkle CS101.001
+
+should result in an error.
+
+Other errors in a command, such as the line below (which appeared in the file above) which fails to mention what course the student is enrolling would also produce an error:
+
+EnrollStudentInCourse FritzTheCat
+
+The program should continue processing the next line correctly after an error occurs.
+
+Home
+
+Maintained by John Sterling (jsterling@poly.edu). Last updated November 5, 2010
+
+ 
+
+--------------020401070008020204050406--
